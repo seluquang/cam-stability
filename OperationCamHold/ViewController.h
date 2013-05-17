@@ -10,7 +10,7 @@
 
 @interface ViewController : UIViewController
 {
-    
+    dispatch_queue_t _rawDataRecordingQueue;
 }
 
 @property (weak, nonatomic) IBOutlet UILabel *mrStartedLabel;
