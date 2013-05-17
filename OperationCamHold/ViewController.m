@@ -47,19 +47,56 @@
     [mr setPreferredFrontCameraSessionPreset:AVCaptureSessionPreset640x480];
     
     [mr addPhotoCallback:^(NSURL *imageURL, NSString *key, NSDate *timeTaken) {
-        TTLogCat(@"MR:Photo", @"addPhotoCallback:key:%@ timeTaken:%@", key, timeTaken);
+        [self handleImageCreatedWithURL:imageURL key:key timeTaken:timeTaken];
+
         _mrLabel.text = [NSString stringWithFormat:@"p-proc: %@", [NSDate date]];
     }];
     
     [mr addVideoCallback:^(NSURL *videoURL, NSString *key, NSDate *startTime, NSNumber *duration) {
-        TTLogCat(@"MR:Video", @"addVideoCallback:%@ key:%@ startTime:%@ duration:%f", videoURL, key, startTime, [duration floatValue]);
+        [self handleVideoCreatedWithURL:videoURL key:key startTime:startTime duration:duration];
+
         _mrLabel.text = [NSString stringWithFormat:@"v-proc: %@", [NSDate date]];
     }];
     
     [mr addAudioCallback:^(float averagePowerLevel) {
-        TTLogCat(@"MR:Audio", @"addAudioCallback:%f", averagePowerLevel);
+        [self handleAudioSampleWithAveragePowerLevel:averagePowerLevel];
         //_mrLabel.text = [NSString stringWithFormat:@"a-proc: %@", [NSDate date]];
     }];
+}
+
+- (void)handleImageCreatedWithURL:(NSURL *)url key:(NSString *)key timeTaken:(NSDate *)timeTaken {
+    
+    TTLogCat(@"MR:Photo", @"addPhotoCallback:key:%@ timeTaken:%@", key, timeTaken);
+    
+//    dispatch_async(_rawDataRecordingQueue, ^{
+//        
+//        TTDeviceLocationManager *lm = [TTDeviceLocationManager sharedDeviceLocationManager];
+//        [_rawDataRecorder addPhotoWithKey:key lat:lm.latitude lon:lm.longitude takenManually:NO];
+//        
+//        [[TTQueueManager sharedQueueManager] addInBackgroundWithItemName:kTTCQueueItemPhotoFile itemID:[url path]];
+//    });
+}
+
+
+- (void)handleVideoCreatedWithURL:(NSURL *)videoURL key:(NSString *)key startTime:(NSDate *)startTime duration:(NSNumber *)duration
+{
+    TTLogCat(@"MR:Video", @"addVideoCallback:%@ key:%@ startTime:%@ duration:%f", videoURL, key, startTime, [duration floatValue]);
+    
+//    dispatch_async(_rawDataRecordingQueue, ^{
+//        
+//        TTDeviceLocationManager *lm = [TTDeviceLocationManager sharedDeviceLocationManager];
+//        
+//        [_rawDataRecorder addVideoWithKey:key lat:lm.latitude lon:lm.longitude takenManually:NO];
+//    });
+};
+
+- (void)handleAudioSampleWithAveragePowerLevel:(float)averagePowerLevel
+{
+    TTLogCat(@"MR:Audio", @"addAudioCallback:%f", averagePowerLevel);
+    
+//    dispatch_async(_rawDataRecordingQueue, ^{
+//        [_rawDataRecorder addSound:averagePowerLevel];
+//    });
 }
 
 - (void)didReceiveMemoryWarning
